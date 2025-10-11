@@ -2,11 +2,10 @@ import os
 import nextcord as discord
 from nextcord.ext import commands
 
-# โหลด TOKEN จาก Railway Environment
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 intents = discord.Intents.default()
-intents.message_content = True  # เปิดเพื่ออ่านข้อความ
+intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # 🔥 Trigger หลายคำ พร้อมข้อความหลายบรรทัด และรูปจาก URL
@@ -29,17 +28,11 @@ TRIGGERS = {
         "https://img2.pic.in.th/pic/Untitled-16664908eb4ccba12.jpg"
     )
 }
-embed = discord.Embed(description=text, color=0x00BFFF)
-embed.set_image(url=img_url)
-embed.set_footer(text="📌 โปรดอ่านให้ครบทุกข้อก่อนส่งหลักฐาน")
-await message.channel.send(embed=embed)
-
 
 @bot.event
 async def on_ready():
-    # ตั้ง Activity โดยไม่ขึ้น "กำลังเล่น"
     activity = discord.Activity(
-        type=discord.ActivityType.watching,  # หรือ ActivityType.listening
+        type=discord.ActivityType.watching,
         name="MOO TEDET99"
     )
     await bot.change_presence(status=discord.Status.online, activity=activity)
@@ -55,12 +48,13 @@ async def on_message(message):
         if key in message.content:
             embed = discord.Embed(description=text, color=0x00BFFF)
             embed.set_image(url=img_url)
+            embed.set_footer(text="📌 โปรดอ่านให้ครบทุกข้อก่อนส่งหลักฐาน")
             await message.channel.send(embed=embed)
             break
 
     await bot.process_commands(message)
 
-# คำสั่งทดสอบ
+
 @bot.command()
 async def ping(ctx):
     await ctx.send("🏓 Pong!")
