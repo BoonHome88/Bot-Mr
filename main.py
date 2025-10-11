@@ -1,6 +1,6 @@
 import os
-import discord
-from discord.ext import commands
+import nextcord as discord
+from nextcord.ext import commands
 
 # โหลด TOKEN จาก Railway Environment
 TOKEN = os.getenv("DISCORD_TOKEN")
