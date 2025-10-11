@@ -48,10 +48,14 @@ TRIGGERS = {
 
 @bot.event
 async def on_ready():
-    # ตั้ง Activity ของบอท
-    activity = discord.Game(name="Developer By MOO TEDET99")
+    # ตั้ง Activity โดยไม่ขึ้น "กำลังเล่น"
+    activity = discord.Activity(
+        type=discord.ActivityType.watching,  # หรือ ActivityType.listening
+        name="Developer By MOO TEDET99"
+    )
     await bot.change_presence(status=discord.Status.online, activity=activity)
     print(f"✅ บอทออนไลน์แล้วในชื่อ: {bot.user}")
+
 
 @bot.event
 async def on_message(message):
