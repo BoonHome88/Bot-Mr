@@ -78,7 +78,7 @@ How to donate :  https://discord.com/channels/980035347264208906/121776149218354
 async def on_ready():
     activity = discord.Activity(
         type=discord.ActivityType.watching,
-        name="MOO TEDET99"
+        name="MOO TEDET99 🐷"
     )
     await bot.change_presence(status=discord.Status.online, activity=activity)
     print(f"✅ บอทออนไลน์แล้วในชื่อ: {bot.user}")
