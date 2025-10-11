@@ -26,9 +26,8 @@ TRIGGERS = {
 4. https://www.facebook.com/groups/communityfivem
 5. https://www.facebook.com/groups/686633655307229/posts/1348306932473228/""",
         "https://img2.pic.in.th/pic/Untitled-16664908eb4ccba12.jpg"
-    ]
-}
- "payment": (
+    ),
+    "payment": (
         """# โอนแล้วส่งสลิป พร้อมแจ้งเลข ID ให้กับทางแอดมินได้เลย ครับ / ค่ะ
 **ทุกการโดเนทจะมี Coin สะสมให้นะครับ ยกเว้น ประมูล / เช่าอู่ / กรอบทวิต**
 
