@@ -49,6 +49,11 @@ TRIGGERS = {
 รถในร้านค้า IC ทุกคันสามารถแคปรูปมาเพื่อสอบถามราคา OC ได้เลยนะครับ""",
         "https://img2.pic.in.th/pic/openserver86e25af469a50025.png"
     ),
+    "htdn": (
+        """คลิ๊กดูวิธีการโดเนทได้ที่ช่องด้านล่างได้เลย <:Asset6:1254006092246155327>
+How to donate :  https://discord.com/channels/980035347264208906/1217761492183547994 (คลิ๊กดูได้เลย)""",
+        "https://img2.pic.in.th/pic/rtytytrver.png"
+    ),
 }
 
 @bot.event
