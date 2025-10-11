@@ -54,7 +54,10 @@ async def on_message(message):
 
     for key, (text, img_url) in TRIGGERS.items():
         if key in message.content:
-            embed = discord.Embed(description=text, color=0x00BFFF)
+            # ส่งข้อความก่อน
+            await message.channel.send(text)
+            # ส่งภาพแยก
+            embed = discord.Embed(color=0x00BFFF)
             embed.set_image(url=img_url)
             embed.set_footer(text="📌 โปรดอ่านให้ครบทุกข้อก่อนส่งหลักฐาน")
             await message.channel.send(embed=embed)
