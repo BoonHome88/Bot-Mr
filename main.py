@@ -6,11 +6,10 @@ from nextcord.ext import commands
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 intents = discord.Intents.default()
-intents.message_content = True
-
+intents.message_content = True  # เปิดเพื่ออ่านข้อความ
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# ✅ Trigger หลายคำ พร้อมข้อความหลายบรรทัด และรูปจาก URL
+# 🔥 Trigger หลายคำ พร้อมข้อความหลายบรรทัด และรูปจาก URL
 TRIGGERS = {
     "แมว": (
         "นี่รูปแมว 🐱",
@@ -34,21 +33,24 @@ TRIGGERS = {
 - ส่งลิงค์ที่เป็นโพสของผู้เล่นแชร์มาให้ตรวจสอบ พร้อมแคปรูปมายัง Ticket ด้วยนะครับ
 - หลังการส่งหลักฐานการแชร์แล้วรอทางทีมงานตรวจสอบ (ต่อไวลิสฟรี)
 
-หรือถ้าหากไม่สะดวกแชร์จะมีค่าใช้จ่ายในการต่อไวลิส 100 บาท / ครั้ง 🙏🏻
+หากไม่สะดวกแชร์จะมีค่าใช้จ่ายในการต่อไวลิส 100 บาท / ครั้ง 🙏🏻
 
 
 ตัวอย่างกลุ่ม
-https://www.facebook.com/groups/FiveMThailand/posts/1496036151129221/
-https://www.facebook.com/groups/289008456634964/
-https://www.facebook.com/groups/364167337464759/
-https://www.facebook.com/groups/communityfivem
-https://www.facebook.com/groups/686633655307229/posts/1348306932473228/""",
+1. https://www.facebook.com/groups/FiveMThailand/posts/1496036151129221/
+2. https://www.facebook.com/groups/289008456634964/
+3. https://www.facebook.com/groups/364167337464759/
+4. https://www.facebook.com/groups/communityfivem
+5. https://www.facebook.com/groups/686633655307229/posts/1348306932473228/""",
         "https://img2.pic.in.th/pic/Untitled-16664908eb4ccba12.jpg"
     )
 }
 
 @bot.event
 async def on_ready():
+    # ตั้ง Activity ของบอท
+    activity = discord.Game(name="Developer By MOO TEDET99")
+    await bot.change_presence(status=discord.Status.online, activity=activity)
     print(f"✅ บอทออนไลน์แล้วในชื่อ: {bot.user}")
 
 @bot.event
@@ -56,7 +58,6 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    # ตรวจว่ามีคำ trigger ในข้อความไหม
     for key, (text, img_url) in TRIGGERS.items():
         if key in message.content:
             embed = discord.Embed(description=text, color=0x00BFFF)
@@ -65,7 +66,6 @@ async def on_message(message):
             break
 
     await bot.process_commands(message)
-
 
 # คำสั่งทดสอบ
 @bot.command()
