@@ -2,7 +2,7 @@ import os
 import nextcord as discord
 from nextcord.ext import commands, tasks
 import asyncio
-import aiohttp
+from aiohttp import web, ClientSession
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 
@@ -37,41 +37,7 @@ TRIGGERS = {
 * เงื่อนไขเป็นไปตามเซิร์ฟเวอร์กำหนด""",
         "https://img2.pic.in.th/pic/11079_1a6183a4c19db5771.png"
     ),
-    "dncar": (
-        """# รายการโดเนทรถ
-
-ร้านค้ารถทั่วไป  : https://discord.com/channels/980035347264208906/1325752244079169606
-
-ร้านค้ารถแรร์ : https://discord.com/channels/980035347264208906/1297059148340662332
-
-ร้านค้ามอไซค์ : https://discord.com/channels/980035347264208906/1338224394551431250
-
-แพ็ครถเริ่มต้น : https://discord.com/channels/980035347264208906/1283822453478396026
-
-รถในร้านค้า IC ทุกคันสามารถแคปรูปมาเพื่อสอบถามราคา OC ได้เลยนะครับ""",
-        "https://img2.pic.in.th/pic/openserver86e25af469a50025.png"
-    ),
-    "htdn": (
-        """คลิ๊กดูวิธีการโดเนทได้ที่ช่องด้านล่างได้เลย <:Asset6:1254006092246155327>
-How to donate :  https://discord.com/channels/980035347264208906/1217761492183547994 (คลิ๊กดูได้เลย)""",
-        "https://img2.pic.in.th/pic/rtytytrver.png"
-    ),
-    "upfam": (
-        """# ส่งไฟล์เสื้อใน Ticket นี้ครับ
-
-อ่านเงื่อนไขและสวัสดิการ : https://discord.com/channels/980035347264208906/1267498369635582072
-ลงทะเบียนแจ้งที่นี่ครับ : https://discord.com/channels/980035347264208906/1267498001782276267""",
-        "-"
-    ),
-    "upgang": (
-        """# ส่งไฟล์เสื้อใน Ticket นี้ครับ
-
-อ่านเงื่อนไขและสวัสดิการ : https://discord.com/channels/980035347264208906/1072820833212444692
-ลงทะเบียนแจ้งที่นี่ครับ : https://discord.com/channels/980035347264208906/1253950583933636618""",
-        "-"
-    ),
 }
-
 
 @bot.event
 async def on_ready():
@@ -81,9 +47,7 @@ async def on_ready():
     )
     await bot.change_presence(status=discord.Status.online, activity=activity)
     print(f"✅ บอทออนไลน์แล้วในชื่อ: {bot.user}")
-
-    keep_alive.start()  # 🔁 เริ่ม loop ป้องกันหลุด
-
+    keep_alive.start()
 
 @bot.event
 async def on_message(message):
@@ -91,7 +55,7 @@ async def on_message(message):
         return
 
     for key, (text, img_url) in TRIGGERS.items():
-        if key in message.content.lower():  # ✅ รองรับพิมพ์เล็ก/ใหญ่
+        if key in message.content.lower():
             await message.channel.send(text)
             if img_url != "-":
                 embed = discord.Embed(color=0x00BFFF)
@@ -102,22 +66,36 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-
 @bot.command()
 async def ping(ctx):
     await ctx.send("🏓 Pong!")
 
+# 🌐 Web server สำหรับ Railway
+async def handle(request):
+    return web.Response(text="✅ Bot is running fine on Railway!")
 
-# 🔁 ระบบ keep-alive (ป้องกันหลุดสำหรับ Railway/Render/Replit)
+async def start_web_server():
+    app = web.Application()
+    app.router.add_get("/", handle)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", int(os.getenv("PORT", 8080)))
+    await site.start()
+    print("🌐 Web server started on port", os.getenv("PORT", 8080))
+
+# 🔁 Keep-alive (ป้องกันบอทหลับ)
 @tasks.loop(minutes=5)
 async def keep_alive():
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get("bot-mr-production.up.railway.app") as resp:
-                if resp.status == 200:
-                    print("🟢 Keep-alive สำเร็จ")
+        async with ClientSession() as session:
+            async with session.get("https://bot-mr-production.up.railway.app") as resp:
+                print("🟢 Keep-alive status:", resp.status)
     except Exception as e:
         print(f"⚠️ เกิดข้อผิดพลาด keep-alive: {e}")
 
+# 🚀 รันทั้ง web server และบอท
+async def main():
+    await start_web_server()
+    await bot.start(TOKEN)
 
-bot.run(TOKEN)
+asyncio.run(main())
