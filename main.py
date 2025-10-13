@@ -84,14 +84,17 @@ async def start_web_server():
     print("🌐 Web server started on port", os.getenv("PORT", 8080))
 
 # 🔁 Keep-alive (ป้องกันบอทหลับ)
+KEEP_ALIVE_URL = "https://bot-mr-production.up.railway.app"  # ใส่ URL ที่ถูกต้องที่ Railway สร้างให้
+
 @tasks.loop(minutes=5)
 async def keep_alive():
     try:
         async with ClientSession() as session:
-            async with session.get("https://bot-mr-production.up.railway.app") as resp:
+            async with session.get(KEEP_ALIVE_URL) as resp:
                 print("🟢 Keep-alive status:", resp.status)
     except Exception as e:
         print(f"⚠️ เกิดข้อผิดพลาด keep-alive: {e}")
+
 
 # 🚀 รันทั้ง web server และบอท
 async def main():
