@@ -4,6 +4,7 @@ from nextcord.ext import commands, tasks
 import asyncio
 from aiohttp import web, ClientSession
 
+# โหลด TOKEN จาก Railway Environment
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 intents = discord.Intents.default()
@@ -84,7 +85,7 @@ async def start_web_server():
     print("🌐 Web server started on port", os.getenv("PORT", 8080))
 
 # 🔁 Keep-alive (ป้องกันบอทหลับ)
-KEEP_ALIVE_URL = "https://bot-mr-production.up.railway.app"  # ใส่ URL ที่ถูกต้องที่ Railway สร้างให้
+KEEP_ALIVE_URL = "https://bot-mr-production.up.railway.app"  # แก้ให้ตรงกับ Domain ของคุณ
 
 @tasks.loop(minutes=5)
 async def keep_alive():
@@ -95,10 +96,20 @@ async def keep_alive():
     except Exception as e:
         print(f"⚠️ เกิดข้อผิดพลาด keep-alive: {e}")
 
+# 🔁 ระบบ Auto Reconnect / Restart เมื่อเกิด error
+async def run_bot():
+    while True:
+        try:
+            print("🚀 กำลังเริ่มต้น Discord Bot...")
+            await bot.start(TOKEN)
+        except Exception as e:
+            print(f"❌ บอทเกิดข้อผิดพลาด: {e}")
+            print("🔁 กำลังรีสตาร์ทบอทใหม่ใน 10 วินาที...")
+            await asyncio.sleep(10)  # หน่วงเวลา 10 วินาทีก่อนลองใหม่
 
-# 🚀 รันทั้ง web server และบอท
+# 🚀 รันทั้ง web server และบอทพร้อมระบบ reconnect
 async def main():
     await start_web_server()
-    await bot.start(TOKEN)
+    await run_bot()
 
 asyncio.run(main())
