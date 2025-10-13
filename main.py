@@ -1,6 +1,8 @@
 import os
 import nextcord as discord
-from nextcord.ext import commands
+from nextcord.ext import commands, tasks
+import asyncio
+import aiohttp
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 
@@ -54,25 +56,22 @@ TRIGGERS = {
 How to donate :  https://discord.com/channels/980035347264208906/1217761492183547994 (คลิ๊กดูได้เลย)""",
         "https://img2.pic.in.th/pic/rtytytrver.png"
     ),
-        "upfam": (
+    "upfam": (
         """# ส่งไฟล์เสื้อใน Ticket นี้ครับ
 
-
 อ่านเงื่อนไขและสวัสดิการ : https://discord.com/channels/980035347264208906/1267498369635582072
-
 ลงทะเบียนแจ้งที่นี่ครับ : https://discord.com/channels/980035347264208906/1267498001782276267""",
         "-"
     ),
-      "upgang": (
+    "upgang": (
         """# ส่งไฟล์เสื้อใน Ticket นี้ครับ
 
-
 อ่านเงื่อนไขและสวัสดิการ : https://discord.com/channels/980035347264208906/1072820833212444692
-
 ลงทะเบียนแจ้งที่นี่ครับ : https://discord.com/channels/980035347264208906/1253950583933636618""",
         "-"
     ),
 }
+
 
 @bot.event
 async def on_ready():
@@ -83,6 +82,8 @@ async def on_ready():
     await bot.change_presence(status=discord.Status.online, activity=activity)
     print(f"✅ บอทออนไลน์แล้วในชื่อ: {bot.user}")
 
+    keep_alive.start()  # 🔁 เริ่ม loop ป้องกันหลุด
+
 
 @bot.event
 async def on_message(message):
@@ -90,14 +91,13 @@ async def on_message(message):
         return
 
     for key, (text, img_url) in TRIGGERS.items():
-        if key in message.content:
-            # ส่งข้อความก่อน
+        if key in message.content.lower():  # ✅ รองรับพิมพ์เล็ก/ใหญ่
             await message.channel.send(text)
-            # ส่งภาพแยก
-            embed = discord.Embed(color=0x00BFFF)
-            embed.set_image(url=img_url)
-            embed.set_footer(text="📌 โปรดอ่านให้ครบทุกข้อก่อนส่งหลักฐาน")
-            await message.channel.send(embed=embed)
+            if img_url != "-":
+                embed = discord.Embed(color=0x00BFFF)
+                embed.set_image(url=img_url)
+                embed.set_footer(text="📌 โปรดอ่านให้ครบทุกข้อก่อนส่งหลักฐาน")
+                await message.channel.send(embed=embed)
             break
 
     await bot.process_commands(message)
@@ -106,5 +106,18 @@ async def on_message(message):
 @bot.command()
 async def ping(ctx):
     await ctx.send("🏓 Pong!")
+
+
+# 🔁 ระบบ keep-alive (ป้องกันหลุดสำหรับ Railway/Render/Replit)
+@tasks.loop(minutes=5)
+async def keep_alive():
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get("bot-mr-production.up.railway.app") as resp:
+                if resp.status == 200:
+                    print("🟢 Keep-alive สำเร็จ")
+    except Exception as e:
+        print(f"⚠️ เกิดข้อผิดพลาด keep-alive: {e}")
+
 
 bot.run(TOKEN)
