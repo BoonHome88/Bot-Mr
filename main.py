@@ -47,7 +47,7 @@ TRIGGERS = {
 
 ร้านค้ามอไซค์ : https://discord.com/channels/980035347264208906/1338224394551431250
 
-แพ็ครถเริ่มต้น : https://discord.com/channels/980035347264208906/1283822453478396026**
+แพ็ครถเริ่มต้น : https://discord.com/channels/980035347264208906/1283822453478396026
 
 >>> รถในร้านค้า IC ทุกคันสามารถแคปรูปมาเพื่อสอบถามราคา OC ได้เลยนะครับ""",
         "https://img5.pic.in.th/file/secure-sv1/openserver86e25af469a50025.png"
