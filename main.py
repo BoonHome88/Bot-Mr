@@ -38,6 +38,11 @@ TRIGGERS = {
 * เงื่อนไขเป็นไปตามเซิร์ฟเวอร์กำหนด""",
         "https://img2.pic.in.th/pic/11079_1a6183a4c19db5771.png"
     ),
+     "htpay": (
+        """# วิธีโดเนท Midnight Racing
+>>> แอพ MRP SHOP จะอยู่ในมือถือในเกมส์ของผู้เล่นทุกท่าน""",
+        "https://img2.pic.in.th/pic/HOW_TO_DONATE.png"
+    ),
     "dncar": (
         """# รายการโดเนทรถ
 
